@@ -5,7 +5,7 @@ Updates the Metadata Packages Downloads [index.json](https://github.com/dhis2-me
 ### Usage
 
 ```shell
-python3 update_index.py '{
+python3 update_index.py --package '{
   "DHIS2Build": "0ed6717",
   "DHIS2Version": "2.39.0.1-SNAPSHOT",
   "healthArea": "Tuberculosis",
@@ -16,11 +16,11 @@ python3 update_index.py '{
   "name": "TB_CS_TRK_DHIS2.39.0.1-SNAPSHOT-en",
   "type": "TRK",
   "version": "2.0.0"
-}'
+}' --url 'https://example.org/archive.zip'
 ```
 
 ```shell
-python3 update_index.py "$(jq -r '.package' < $package_file)"
+python3 update_index.py --package "$(jq -r '.package' < $package_file)" --url 'https://example.org/archive.zip' 
 ```
 
 ### Tests

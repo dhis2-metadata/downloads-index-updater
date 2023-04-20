@@ -4,7 +4,9 @@ import argparse
 
 def get_input_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('package_input', type=str, help='Package object JSON input string')
+    parser.add_argument('--package', required=True, type=str, help='Package object JSON input string.')
+    parser.add_argument('--url', required=True, type=str, help='Package download URL.')
+
     return parser.parse_args()
 
 
@@ -32,7 +34,9 @@ def write_json(file: str, data: list[dict]) -> None:
 
 
 def main() -> None:
-    package_input = json.loads(get_input_args().package_input)
+    args = get_input_args()
+
+    package_input = json.loads(args.package)
 
     index = load_json('index.json')
 
@@ -64,7 +68,7 @@ def main() -> None:
 
     dhis2_version_object = {
         'version': package_input['DHIS2Version'],
-        'url': 'https://packages.dhis2.org/archive.zip'
+        'url': args.url
     }
     get_or_create_object(translation_language['dhis2Versions'], 'version', package_input['DHIS2Version'], dhis2_version_object)
 
