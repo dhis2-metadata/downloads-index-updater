@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import date
 
 import json
 import argparse
@@ -8,6 +9,7 @@ def get_input_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--package', required=True, type=str, help='Package object JSON input string.')
     parser.add_argument('--index-file', required=True, type=str, default='index.json', help='Packages Downloads index file.')
+    parser.add_argument('--release-date', type=str, default=date.today().isoformat(), help='Package release date.')
     parser.add_argument('--url', type=str, help='Package download URL.')
     parser.add_argument('--reference-url', type=str, help='Package reference download URL.')
 
@@ -54,15 +56,16 @@ def main() -> None:
     package_object = {
         'name': package_input['description'],
         'code': package_input['code'],
-        'versions': []
+        'packageVersions': []
     }
     package = get_or_create_object(area['packages'], 'code', package_input['code'], package_object)
 
     package_version_object = {
         'version': package_input['version'],
+        'releaseDate': args.release_date,
         'translations': []
     }
-    package_version = get_or_create_object(package['versions'], 'version', package_input['version'], package_version_object)
+    package_version = get_or_create_object(package['packageVersions'], 'version', package_input['version'], package_version_object)
 
     translation_language_object = {
         'language': package_input['locale'],
@@ -76,8 +79,8 @@ def main() -> None:
 
     dhis2_version_object = {
         'version': package_input['DHIS2Version'],
-        'url': args.url if args.url is not None else default_url_pattern + default_package_name_pattern + '.zip',
-        'metadataReference': args.reference_url if args.reference_url is not None else default_url_pattern + default_reference_name_pattern + '.xlsx'
+        'metadataReference': args.reference_url if args.reference_url is not None else default_url_pattern + default_reference_name_pattern + '.xlsx',
+        'url': args.url if args.url is not None else default_url_pattern + default_package_name_pattern + '.zip'
     }
     get_or_create_object(translation_language['dhis2Versions'], 'version', package_input['DHIS2Version'], dhis2_version_object)
 
