@@ -5,7 +5,9 @@ import argparse
 def get_input_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--package', required=True, type=str, help='Package object JSON input string.')
-    parser.add_argument('--url', required=True, type=str, help='Package download URL.')
+    parser.add_argument('--index-file', required=True, type=str, default='index.json', help='Packages Downloads index file.')
+    parser.add_argument('--url', type=str, help='Package download URL.')
+    parser.add_argument('--reference-url', type=str, help='Package reference download URL.')
 
     return parser.parse_args()
 
@@ -38,7 +40,7 @@ def main() -> None:
 
     package_input = json.loads(args.package)
 
-    index = load_json('index.json')
+    index = load_json(args.index_file)
 
     area_object = {
         'area': package_input['healthArea'],
@@ -66,13 +68,18 @@ def main() -> None:
     }
     translation_language = get_or_create_object(package_version['translations'], 'language', package_input['locale'], translation_language_object)
 
+    default_url_pattern = f"https://packages.dhis2.org/{package_input['locale']}/{package_input['code']}/{package_input['version']}/{package_input['DHIS2Version']}/"
+    default_package_name_pattern = f"{package_input['code']}_{package_input['version']}_{package_input['DHIS2Version']}"
+    default_reference_name_pattern = f"{package_input['code']}_COMPLETE_{package_input['version']}_{package_input['DHIS2Version']}"
+
     dhis2_version_object = {
         'version': package_input['DHIS2Version'],
-        'url': args.url
+        'url': args.url if args.url is not None else default_url_pattern + default_package_name_pattern + '.zip',
+        'metadataReference': args.reference_url if args.reference_url is not None else default_url_pattern + default_reference_name_pattern + '.xlsx'
     }
     get_or_create_object(translation_language['dhis2Versions'], 'version', package_input['DHIS2Version'], dhis2_version_object)
 
-    write_json('index.json', index)
+    write_json(args.index_file, index)
 
 
 if __name__ == '__main__':
