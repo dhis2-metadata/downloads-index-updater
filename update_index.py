@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import argparse
 
@@ -18,7 +20,7 @@ def get_or_create_object(parent_object: list[dict], key: str, value: str, defaul
         print(f'"{key}": "{value}" already exists.')
         return existing_object
     except StopIteration:
-        print(f'"{key}: {value}" doesn\'t exists. Adding it ...')
+        print(f'"{key}": "{value}" doesn\'t exist. Adding it ...')
         new_object = default_object.copy()
         new_object[key] = value
         parent_object.append(new_object)
@@ -43,11 +45,11 @@ def main() -> None:
     index = load_json(args.index_file)
 
     area_object = {
-        'area': package_input['healthArea'],
-        'code': package_input['code'].split('_')[0],
+        'area': package_input['healthAreaName'],
+        'code': package_input['healthAreaCode'],
         'packages': []
     }
-    area = get_or_create_object(index['areas'], 'area', package_input['healthArea'], area_object)
+    area = get_or_create_object(index['areas'], 'area', package_input['healthAreaName'], area_object)
 
     package_object = {
         'name': package_input['description'],
