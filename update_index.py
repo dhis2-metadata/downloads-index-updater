@@ -73,7 +73,7 @@ def main() -> None:
     }
     translation_language = get_or_create_object(package_version['translations'], 'language', package_input['locale'], translation_language_object)
 
-    short_dhis2_version = 'DHIS' + '.'.join(package_input['DHIS2Version'].split('.')[:2])
+    short_dhis2_version = '.'.join(package_input['DHIS2Version'].split('.')[:2])
     dhis2_version_object = {
         'version': short_dhis2_version,
         'metadataReference': args.reference_url,
