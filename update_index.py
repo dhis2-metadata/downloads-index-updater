@@ -37,6 +37,7 @@ def load_json(file: str) -> list[dict]:
 def write_json(file: str, data: list[dict]) -> None:
     with open(file, 'w') as f:
         json.dump(data, f, indent=2)
+        f.write("\n")  # Add newline at the end of the file
 
 
 def main() -> None:
